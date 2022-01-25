@@ -7,6 +7,9 @@ class Blackjack:
        self.money = money
        self.min_bet = 25.00
 
+    def __repr__(self):
+        return f'Today\'s player is {self.player}. They have ${self.money} and are currently playing on a ${round(self.min_bet)} minimum BlackJack table.'
+
     def deal_card(self):
         card_values = {}
 
@@ -16,20 +19,6 @@ class Blackjack:
         card_values.update({'J': 10, 'Q': 10, 'K': 10, 'A': 11})
 
         return random.choice(list(card_values.items()))
-
-    def hit(self):
-        pass
-
-    
-    def stand(self, card_total, wager):
-        if card_total >= 15 and card_total <= 21:
-            self.money += round((wager + wager/2))
-            print('Great job, you win!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
-            break
-        else:
-            self.money -= wager
-            print('You lose, sorry!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
-            break
 
 
     def play(self):
@@ -56,27 +45,35 @@ class Blackjack:
             print(f'\nYour cards:\n{cards}\n\nTotal: {card_total}\n')
             
             while True:
+
+                if card_total == 21:
+                    self.money += round((wager + wager/2))
+                    print('Great job, you win!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
+                    break
+
                 hit_or_stand = input('\nHit or Stand? ')
                 
                 if hit_or_stand[0].lower() != 'h':
-                    self.stand(card_total, wager)
-                
+                    if card_total >= 15 and card_total <= 21:
+                        self.money += round((wager + wager/2))
+                        print('\nGreat job, you win!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
+                        break
+                    else:
+                        self.money -= wager
+                        print('\nYou lose, sorry!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
+                        break
+
                 else:
                     new_card = self.deal_card()
                     card_total += new_card[1]
                     cards.append(new_card[0])
                     print('\nCards: ', cards, '\n\nTotal: ', card_total)
 
-
                 if card_total > 21:
                     self.money -= wager
-                    print('You lose, sorry!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
+                    print('\nYou lose, sorry!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
                     break
 
-                elif card_total == 21:
-                    self.money += round((wager + wager/2))
-                    print('Great job, you win!\nYour current pot is ${money}'.format(money = '{:.2f}'.format(round(self.money, 2))))
-                    break
 
             if input('Would you like it play again? ')[0].lower() == 'n':
                 play = False
